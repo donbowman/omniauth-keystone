@@ -1,0 +1,5 @@
+#!/bin/bash
+gem build
+sudo cp keystone_* ~git/gitlab/app/assets/images/authbuttons/
+sudo gem install omniauth-keystone-0.0.2.gem
+

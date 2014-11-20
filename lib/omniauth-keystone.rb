@@ -25,21 +25,27 @@ module OmniAuth
         f = OmniAuth::Form.new(:title => (options[:title] || "OpenStack Authentication"), :url => callback_path)
         f.text_field 'Login', 'username'
         f.password_field 'Password', 'password'
-        f.button "Make it so"
+        f.button "Sign in"
         f.to_response
       end
 
       def callback_phase
         log :info, "--Callback phase initiated."
         begin
+	  u = request.env["rack.request.form_hash"]["username"]
+	  p = request.env["rack.request.form_hash"]["password"]
           log :info, "--Callback phase (1)."
-          log :info, "auth_url: %s" % [options.auth_url]
-          log :info, "args: %s" % [options]
-          os = OpenStack::Connection.create({:username => request['username'],
-                                             :api_key=>request['password'],
-                                             :auth_method=>"password",
-                                             :auth_url => options.auth_url,
-                                             :authtenant_name => request['username']})
+#          log :info, "req: %s" % [request.inspect]
+          log :info, "auth_url: <%s>" % [options.auth_url]
+          log :info, "req-u: <%s>" % [u]
+          log :info, "req-p: <%s>" % [p]
+# OpenStack::Connection.create({:username => 'don', :api_key=>'random-password',:auth_method=>'password',:auth_url => 'https://nubo.sandvine.rocks:5000/v2.0', :authtenant_name => 'don'})
+
+          os = OpenStack::Connection.create({
+		:username => u,
+		:api_key=> p,
+		:auth_method=>"password",
+		:auth_url => options.auth_url})
           log :info, "--Callback phase (2)."
         rescue Exception => e
           log :info, "--Callback phase (3)."
