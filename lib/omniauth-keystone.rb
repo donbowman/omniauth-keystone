@@ -36,30 +36,25 @@ module OmniAuth
 	  p = request.env["rack.request.form_hash"]["password"]
           log :info, "--Callback phase (1)."
 #          log :info, "req: %s" % [request.inspect]
-          log :info, "auth_url: <%s>" % [options.auth_url]
-          log :info, "req-u: <%s>" % [u]
-          log :info, "req-p: <%s>" % [p]
-# OpenStack::Connection.create({:username => 'don', :api_key=>'random-password',:auth_method=>'password',:auth_url => 'https://nubo.sandvine.rocks:5000/v2.0', :authtenant_name => 'don'})
+#          log :info, "req-u: <%s>" % [u]
+#          log :info, "req-p: <%s>" % [p]
 
           os = OpenStack::Connection.create({
 		:username => u,
 		:api_key=> p,
 		:auth_method=>"password",
 		:auth_url => options.auth_url})
-          log :info, "--Callback phase (2)."
         rescue Exception => e
-          log :info, "--Callback phase (3)."
-          log :info, e.message
+          #log :info, "--Callback phase (3)."
+          #log :info, e.message
           return fail!(:keystone_error, e)
         end
-        log :info, "--Callback phase (4)."
-	@user = request['username']
-	@user_email = request['username']
-        log :info, "--Callback phase (5)."
+        #log :info, "--Callback phase (4)."
+	@user = u
+	@user_email = u
         @user_info = {
             'name' => @user
         }
-        log :info, "--Callback phase (6) %s" % [@user]
       end
 
       uid do 
